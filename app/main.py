@@ -31,14 +31,14 @@ class CompanyData:
 
 
 def get_init_data(s: requests.Session) -> str:
-    init_dict = {}
     s.headers.update(
         {
             "user-agent": USER_AGENT,
             "referer": BASE_URL,
         }
     )
-    response = s.get(BASE_URL)
+
+    response = s.get(BASE_URL, verify=True)
     soup = BeautifulSoup(response.content, "html.parser")
     csrf_middleware_token = soup.select_one("div.modal-wrap + script").next.text.split(";")[0].split("=")[1].strip().replace('"', "")
     return csrf_middleware_token
@@ -100,7 +100,7 @@ def parse_all_companies() -> None:
     s = requests.Session()
     data = get_init_data(s)
     count = 0
-    while True:
+    while count < 200:
         logging.info(f"Parse company count {count} ...")
         companies = get_twenty_companies(s, count, data)
         if companies:

@@ -4,7 +4,6 @@ import logging
 import sys
 from dataclasses import dataclass, astuple, fields
 from urllib.parse import urljoin
-
 import requests
 
 from bs4 import BeautifulSoup
@@ -100,7 +99,7 @@ def parse_all_companies() -> None:
     s = requests.Session()
     data = get_init_data(s)
     count = 0
-    while count < 200:
+    while True:
         logging.info(f"Parse company count {count} ...")
         companies = get_twenty_companies(s, count, data)
         if companies:
